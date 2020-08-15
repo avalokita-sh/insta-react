@@ -70,8 +70,9 @@ const App = () => {
 
 	const signUp = (event) => {
 		event.preventDefault();
-		setOpen(false);
-		auth.createUserWithEmailAndPassword(email,password)
+		
+		auth
+		.createUserWithEmailAndPassword(email,password)
 		.then(authUser => {
 			return authUser.user.updateProfile({
 				displayName: username
@@ -79,10 +80,17 @@ const App = () => {
 		})
 		.catch(error => alert(error.message));
 
+		setOpen(false);
 	}
 
 	const signIn = (event) => {
-		
+		event.preventDefault();
+
+		auth
+		.signInWithEmailAndPassword(email,password)
+		.catch((error) => alert(error.message));
+
+		setOpenSignIn(false);
 	}
 	return (
 		<div className="app">
@@ -127,7 +135,7 @@ const App = () => {
 			  onClose={() => setOpenSignIn(false)}
 			>
 			  <div style={modalStyle} className={classes.paper}>
-				<form className="app__signIn">
+				<form className="app__signUp">
 					<center>
 						<img 
 							className="app__headerImage"
@@ -147,7 +155,7 @@ const App = () => {
 						value={password}
 						onChange={ e => setPassword(e.target.value)}
 					/>
-					<Button type="submit" onClick={signUp}>Sign up</Button>
+					<Button type="submit" onClick={signIn}>Sign up</Button>
 				</form>
 			  </div>
 			</Modal>
