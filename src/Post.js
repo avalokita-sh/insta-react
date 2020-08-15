@@ -10,7 +10,6 @@ const Post = ({username, caption, imageUrl}) => {
 					className="post__avatar"
 					alt={username}
 					src="static/images/avatar/1.png"
-
 				/>
 				<h3>{username}</h3>
 			</div>
@@ -19,10 +18,7 @@ const Post = ({username, caption, imageUrl}) => {
 				src={imageUrl}
 				alt="first post"
 			/>
-			{/*image*/}
-
 			<h4 className="post__text"><strong>{username}</strong> {caption}</h4>
-			{/*username + caption*/}
 		</div>
 	);
 }

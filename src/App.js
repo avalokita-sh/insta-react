@@ -1,10 +1,91 @@
-import React from 'react';
+import React,{useState, useEffect} from 'react';
 import Post from './Post.js';
+import { db } from './firebase.js';
 import './App.css';
+import { makeStyles } from '@material-ui/core/styles';
+import Modal from '@material-ui/core/Modal';
+import { Button, Input } from '@material-ui/core';
+
+function getModalStyle() {
+  const top = 50;
+  const left = 50;
+
+  return {
+    top: `${top}%`,
+    left: `${left}%`,
+    transform: `translate(-${top}%, -${left}%)`,
+  };
+}
+
+const useStyles = makeStyles((theme) => ({
+  paper: {
+    position: 'absolute',
+    width: 400,
+    backgroundColor: theme.palette.background.paper,
+    border: '2px solid #000',
+    boxShadow: theme.shadows[5],
+    padding: theme.spacing(2, 4, 3),
+  },
+}));
 
 const App = () => {
+	const classes = useStyles();
+	const [modalStyle] =useState(getModalStyle);
+
+	const [posts, setPosts] = useState([]);
+	const [open, setOpen] = useState(false);
+	const [username, setUsername] = useState('');
+	const [email, setEmail] = useState('');
+	const [password, setPassword] = useState('');
+
+	useEffect(() => {
+		db.collection('posts').onSnapshot(snapshot =>{
+			console.log(snapshot);
+			setPosts(snapshot.docs.map(doc => ({
+				id:doc.id,
+				post:doc.data()
+			})));
+		})
+	},[]);
 	return (
 		<div className="app">
+			<Modal
+			  open={open}
+			  onClose={() => setOpen(false)}
+			>
+			  <div style={modalStyle} className={classes.paper}>
+				<form className="app__signUp">
+					<center>
+						<img 
+							className="app__headerImage"
+							src="https://www.instagram.com/static/images/web/mobile_nav_type_logo.png/735145cfe0a4.png"
+							alt="IG logo"
+						/>
+						<Input 
+							type="text"
+							placeholder="username"
+							value={email}
+							onChange={ e => setUsername(e.target.value)}
+						/>
+						<Input 
+							type="text"
+							placeholder="email"
+							value={email}
+							onChange={ e => setEmail(e.target.value)}
+						/>
+						<Input 
+							type="password"
+							placeholder="password"
+							value={password}
+							onChange={ e => setPassword(e.target.value)}
+						/>
+					</center>
+				</form>
+			  </div>
+			</Modal>
+			
+			<Button onClick={() => setOpen(true)}>Sign up</Button>
+
 			<div className="app__header">
 				<img 
 					className="app__headerImage"
@@ -14,23 +95,10 @@ const App = () => {
 			</div>
 			
 			<h1>Instagram-clone</h1>
-			{/*header*/}
-			
-			<Post 
-				username="Ava.niko"
-				caption="all the sitting around"
-				imageUrl="https://images.unsplash.com/photo-1502224562085-639556652f33?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=1000&q=80"
-			/>
-			<Post 
-				username="Ava.niko"
-				caption="all the sitting around"
-				imageUrl="https://images.unsplash.com/photo-1502224562085-639556652f33?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=1000&q=80"
-			/>
-			<Post 
-				username="Ava.niko"
-				caption="all the sitting around"
-				imageUrl="https://images.unsplash.com/photo-1502224562085-639556652f33?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=1000&q=80"
-			/>
+			{posts.map(({id, post}) => {
+				return <Post key={id} username={post.username} caption={post.caption} imageUrl={post.imageUrl} />
+				})
+			}
 		</div>
 	);
 }
