@@ -1,5 +1,6 @@
 import React,{useState, useEffect} from 'react';
-import Post from './Post.js';
+import Post from './Post';
+import ImageUpload from './ImageUpload';
 import { db, auth } from './firebase.js';
 import './App.css';
 import { makeStyles } from '@material-ui/core/styles';
@@ -94,6 +95,21 @@ const App = () => {
 	}
 	return (
 		<div className="app">
+
+			{user?.displayName ? (
+				<ImageUpload username={user.displayName}/>
+			):(
+				<h3>Login to post</h3>
+			)}
+
+			<div className="app__header">
+				<img 
+					className="app__headerImage"
+					src="https://www.instagram.com/static/images/web/mobile_nav_type_logo.png/735145cfe0a4.png"
+					alt="IG logo"
+				/>
+			</div>
+			
 			<Modal
 			  open={open}
 			  onClose={() => setOpen(false)}
@@ -155,7 +171,7 @@ const App = () => {
 						value={password}
 						onChange={ e => setPassword(e.target.value)}
 					/>
-					<Button type="submit" onClick={signIn}>Sign up</Button>
+					<Button type="submit" onClick={signIn}>Sign In</Button>
 				</form>
 			  </div>
 			</Modal>
@@ -168,14 +184,6 @@ const App = () => {
 					<Button onClick={() => setOpen(true)}>Sign up</Button>
 				</div>
 			)}
-
-			<div className="app__header">
-				<img 
-					className="app__headerImage"
-					src="https://www.instagram.com/static/images/web/mobile_nav_type_logo.png/735145cfe0a4.png"
-					alt="IG logo"
-				/>
-			</div>
 			
 			<h1>Instagram-clone</h1>
 			{posts.map(({id, post}) => {
