@@ -27,7 +27,6 @@ const ImageUpload = ({username}) => {
 			},
 			(error) => {
 				//error function
-				console.log(error);
 				alert(error.message);
 			},
 			() => {
